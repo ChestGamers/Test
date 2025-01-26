@@ -1,0 +1,111 @@
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	font-family: 'Montserrat', sans-serif;
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+}
+
+.Map {
+	width: 100%;
+	height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.map-farm {
+	max-width: 3302px;
+	position: relative;
+	text-align: center;
+}
+
+.map-farm svg {
+	position: absolute;
+	top: -2px;
+	left: 0;
+	height: 100%;
+	width: 100%;
+}
+
+.map svg path {
+	fill: none;
+	pointer-events: all;
+	cursor: pointer;
+}
+
+.map svg path:hover {
+	animation: hoverElement 2s linear infinite;
+}
+
+.key {
+	fill: none;
+	stroke: rgb(0, 17, 255);
+	stroke-width: 10px;
+	cursor: pointer;
+	pointer-events: all;
+}
+
+.key:hover {
+	animation: highlightKey 2s linear infinite;
+}
+
+@keyframes highlightKey {
+	0% {
+		stroke: rgb(0, 255, 0);
+	}
+	50% {
+		stroke: red;
+	}
+	100% {
+		stroke: black;
+	}
+}
+
+.tooltip {
+	position: absolute;
+	left: 0;
+	top: 0;
+	padding: 5px;
+	background: #c5effa;
+	border-radius: 10px;
+	box-shadow: 0 0 10px rgba(0,0,0,0.3);
+	display: none;
+}
+
+.info__bg {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100vh;
+	background: rgba(0,0,0,0.5);
+	opacity: 0;
+	transition: 0.3s all;
+	pointer-events: none;
+	z-index: 10;
+}
+
+.info__bg.active {
+	pointer-events: all;
+	opacity: 1;
+	transition: 0.3s all;
+}
+
+.info {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background: #fff;
+	border-radius: 20px;
+	padding: 25px;
+	width: 500px;
+}
