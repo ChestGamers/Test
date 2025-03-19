@@ -100,12 +100,13 @@ img {
 }
 
 .info {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	background: #fff;
-	border-radius: 20px;
-	padding: 25px;
-	width: 500px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    border-radius: 20px;
+    padding: 25px;
+    width: 90%; /* Изменили на относительную ширину */
+    max-width: 500px; /* Ограничение для больших экранов */
 }
