@@ -414,3 +414,48 @@ circle.key:hover {
 .btn-cancel:hover {
     background: #52525b;
 }
+
+@media (max-width: 768px) {
+    /* Фиксируем панель вверху экрана и добавляем плотный темный фон */
+    .header-filters {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+        background: rgba(15, 15, 15, 0.95); /* Плотный фон, чтобы карта под кнопками не мешала */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+        padding: 6px 0;
+    }
+
+    /* Выстраиваем кнопки и выпадающий список в одну линию и включаем прокрутку */
+    .maps-filter {
+        display: flex;
+        overflow-x: auto; /* Включаем горизонтальный скролл */
+        -webkit-overflow-scrolling: touch; /* Плавная прокрутка на iOS */
+        gap: 8px; /* Расстояние между кнопками */
+        padding: 4px 12px; /* Отступы по краям, чтобы кнопки не прилипали к экрану */
+    }
+
+    /* Прячем полосу прокрутки, чтобы меню выглядело аккуратно */
+    .maps-filter::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Запрещаем кнопкам и выпадающему списку сжиматься и портить текст */
+    .filter-btn, 
+    .dropdown-container {
+        flex: 0 0 auto; 
+        font-size: 13px; /* Удобный размер шрифта для телефона */
+        padding: 8px 14px; /* Оптимальный размер для нажатия пальцем */
+        height: 38px; /* Выравниваем всё по одной высоте */
+        box-sizing: border-box;
+    }
+
+    /* Слегка корректируем сам select внутри контейнера */
+    .filter-select {
+        font-size: 13px;
+        height: 100%;
+        cursor: pointer;
+    }
+}
