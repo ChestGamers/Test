@@ -416,43 +416,52 @@ circle.key:hover {
 }
 
 @media (max-width: 768px) {
-    /* Фиксируем панель вверху экрана и добавляем плотный темный фон */
+    /* Фиксируем панель вверху экрана */
     .header-filters {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
+        transform: none; /* ИСПРАВЛЕНИЕ: полностью отменяем компьютерный сдвиг влево */
         z-index: 1000;
-        background: rgba(15, 15, 15, 0.95); /* Плотный фон, чтобы карта под кнопками не мешала */
+        background: rgba(15, 15, 15, 0.95);
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
         padding: 6px 0;
     }
 
-    /* Выстраиваем кнопки и выпадающий список в одну линию и включаем прокрутку */
+    /* Выстраиваем кнопки по центру */
     .maps-filter {
         display: flex;
-        overflow-x: auto; /* Включаем горизонтальный скролл */
-        -webkit-overflow-scrolling: touch; /* Плавная прокрутка на iOS */
-        gap: 8px; /* Расстояние между кнопками */
-        padding: 4px 12px; /* Отступы по краям, чтобы кнопки не прилипали к экрану */
+        overflow-x: auto; /* Включаем скролл, если экран будет совсем узкий */
+        -webkit-overflow-scrolling: touch;
+        gap: 8px;
+        padding: 4px 12px;
+        justify-content: center; /* ИСПРАВЛЕНИЕ: выравниваем все кнопки ровно по центру экрана */
     }
 
-    /* Прячем полосу прокрутки, чтобы меню выглядело аккуратно */
+    /* Если экран телефона слишком узкий и кнопки начинают не влезать, 
+       переключаем выравнивание налево, чтобы скролл работал корректно */
+    @media (max-width: 520px) {
+        .maps-filter {
+            justify-content: flex-start;
+        }
+    }
+
+    /* Прячем полосу прокрутки */
     .maps-filter::-webkit-scrollbar {
         display: none;
     }
 
-    /* Запрещаем кнопкам и выпадающему списку сжиматься и портить текст */
+    /* Запрещаем кнопкам сжиматься */
     .filter-btn, 
     .dropdown-container {
         flex: 0 0 auto; 
-        font-size: 13px; /* Удобный размер шрифта для телефона */
-        padding: 8px 14px; /* Оптимальный размер для нажатия пальцем */
-        height: 38px; /* Выравниваем всё по одной высоте */
+        font-size: 13px;
+        padding: 8px 14px;
+        height: 38px;
         box-sizing: border-box;
     }
 
-    /* Слегка корректируем сам select внутри контейнера */
     .filter-select {
         font-size: 13px;
         height: 100%;
