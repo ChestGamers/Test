@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
             minScale: 1,
             contain: 'outside',
             startScale: 1,
-            excludeClass: 'key' // Чтобы клики по меткам не сбивали перетаскивание
+            excludeClass: 'key' // Клики по меткам не сбивают перетаскивание карты
         });
 
         panzoomElem.parentElement.addEventListener('wheel', (e) => {
@@ -28,14 +28,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Функция отрисовки динамических точек
     function renderDynamicMarkers() {
-        // Ищем слой для рендера только внутри активной карты
         const activeLayer = document.querySelector('.map-layer.active');
         if (!activeLayer) return;
 
         const dynamicLayer = activeLayer.querySelector('.dynamic-markers-layer');
         if (!dynamicLayer) return;
 
-        // Полностью очищаем старые маркеры
+        // Полностью очищаем старые маркеры перед перерисовкой
         dynamicLayer.innerHTML = "";
 
         // Фильтруем маркеры по текущей карте и по категории
@@ -49,7 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
         filtered.forEach(marker => {
             const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
             
-            // Назначаем класс (базовый "key" + модификатор категории "box", "weapon", "extract", "spawn")
             let className = "key";
             if (marker.category && marker.category !== "loot") {
                 className += ` ${marker.category}`;
@@ -58,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
             circle.setAttribute("class", className);
             circle.setAttribute("cx", marker.x);
             circle.setAttribute("cy", marker.y);
-            circle.setAttribute("r", "25"); // Размер круга-сейфа
+            circle.setAttribute("r", "25"); // Базовый размер круга
             
             // Записываем данные для тултипов и модалок
             circle.setAttribute("data-title", marker.title);
@@ -70,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Попытка автозагрузки файла JSON с сервера
+    // Автозагрузка файла JSON с сервера
     async function loadMarkers() {
         try {
             const response = await fetch('arena_breakout_markers.json');
@@ -79,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log("Данные успешно подгружены из файла JSON.");
             }
         } catch (e) {
-            console.log("Файл JSON пока пуст или отсутствует на сервере. Начни добавлять точки!");
+            console.log("Файл JSON пока отсутствует на сервере. Начни добавлять точки!");
         }
         renderDynamicMarkers();
     }
@@ -102,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
             targetLayer.classList.add('active');
         }
 
-        // Рендерим точки для новой активной карты
+        // Перерисовываем маркеры для выбранной карты
         renderDynamicMarkers();
 
         if (panzoom) {
@@ -112,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Клик по обычным кнопкам карт
+    // Клик по кнопкам обычных карт
     filterButtons.forEach(btn => {
         btn.addEventListener('click', function () {
             filterButtons.forEach(b => b.classList.remove('active'));
@@ -123,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Изменение подэтажей Арсенала
+    // Изменение этажей Арсенала в выпадающем списке
     if (armorySelect) {
         armorySelect.addEventListener('change', function () {
             if (this.value) {
@@ -133,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Фильтр категорий лута (Все, только сейфы, кейсы и т.д.)
+    // Фильтр категорий лута
     if (categorySelect) {
         categorySelect.addEventListener('change', function() {
             currentFilter = this.value;
@@ -151,11 +149,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const infoTitle = document.querySelector('.info_title');
     const infoText = document.querySelector('.info__text');
 
-    // Открытие инфо-попапа (Event Delegation, чтобы работало и для созданных кругов)
+    // Открытие инфо-попапа при клике на метку (Event Delegation)
     if (panzoomElem) {
         panzoomElem.addEventListener('click', function (e) {
             const key = e.target.closest('.key');
-            if (!key || isEditMode) return; // В режиме редактирования клик ставит точку, попап не открываем
+            if (!key || isEditMode) return; // В режиме редактирования попап не открывается
             
             e.stopPropagation();
 
@@ -181,17 +179,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Закрытие модалки по клику на крестик
     if (infoClose) {
         infoClose.addEventListener('click', () => {
             if (infoBg) infoBg.classList.remove('active');
+            if (infoPhoto) infoPhoto.classList.remove('zoomed'); // Сбрасываем зум картинки
         });
     }
 
+    // Закрытие модалки по клику на темный фон вокруг
     if (infoBg) {
         infoBg.addEventListener('click', function (e) {
             if (e.target === this) {
                 this.classList.remove('active');
+                if (infoPhoto) infoPhoto.classList.remove('zoomed'); // Сбрасываем зум картинки
             }
+        });
+    }
+
+    // Полноэкранный просмотр картинки при тапе/клике внутри попапа
+    if (infoPhoto) {
+        infoPhoto.addEventListener('click', function() {
+            this.classList.toggle('zoomed');
         });
     }
 
@@ -205,19 +214,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveBtn = document.getElementById('save-marker');
     const cancelBtn = document.getElementById('cancel-marker');
 
-    // Переключение режима с проверкой пароля
+    // Включение/выключение режима редактирования с проверкой пароля
     toggleEditBtn.addEventListener('click', () => {
         if (!isEditMode) {
-            // Если режим выключен, запрашиваем пароль для включения
+            // Запрашиваем пароль при попытке активировать редактор
             const password = prompt("Введите пароль для редактирования карты:");
             
-            if (password !== "admin123") { // Замени "admin123" на свой секретный пароль
+            if (password !== "admin123") { // Установи свой секретный пароль вместо admin123
                 alert("Неверный пароль!");
                 return;
             }
         }
 
-        // Если пароль верный или мы просто выключаем режим
         isEditMode = !isEditMode;
         if (isEditMode) {
             toggleEditBtn.textContent = "РЕЖИМ РЕДАКТОРА: ВКЛ";
@@ -226,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (tooltip) tooltip.style.display = 'none';
             
             if (panzoom) {
-                panzoom.setOptions({ disablePan: true });
+                panzoom.setOptions({ disablePan: true }); // Блокируем карту, чтобы ставить точки без сдвигов
             }
         } else {
             toggleEditBtn.textContent = "РЕЖИМ РЕДАКТОРА: ВЫКЛ";
@@ -235,33 +243,32 @@ document.addEventListener('DOMContentLoaded', () => {
             modal.style.display = 'none';
             
             if (panzoom) {
-                panzoom.setOptions({ disablePan: false });
+                panzoom.setOptions({ disablePan: false }); // Разблокируем карту обратно
             }
         }
     });
 
-    // Клик по карте в режиме редактирования (вычисляем точные координаты)
+    // Клик по карте в режиме редактирования (расчет точных координат через матрицу трансформации)
     if (panzoomElem) {
         panzoomElem.addEventListener('click', (e) => {
             if (!isEditMode) return;
 
-            // Находим активный SVG
             const activeLayer = document.querySelector('.map-layer.active');
             if (!activeLayer) return;
             const svg = activeLayer.querySelector('svg');
             if (!svg) return;
 
-            // Предотвращаем открытие модалок лута при установке точки
+            // Если кликнули по уже существующему маркеру, форму создания новой точки не открываем
             if (e.target.closest('.key')) return; 
 
             const pt = svg.createSVGPoint();
             pt.x = e.clientX;
             pt.y = e.clientY;
             
-            // Гениальная формула: рассчитывает координаты SVG с учетом текущего зума
+            // Преобразование экранных координат клика в координаты SVG с учетом масштаба Panzoom
             const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
 
-            // Записываем координаты в память модалки и открываем форму ввода
+            // Сохраняем координаты в память модального окна и открываем его
             modal.style.display = 'block';
             modal.dataset.x = svgP.x;
             modal.dataset.y = svgP.y;
@@ -279,7 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
         resetModalFields();
     });
 
-    // Сохранение новой точки в массив
+    // Добавление созданной точки в массив данных
     saveBtn.addEventListener('click', () => {
         const title = document.getElementById('m-title').value.trim();
         const desc = document.getElementById('m-desc').value.trim();
@@ -293,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const newMarker = {
             id: Date.now(),
-            map: activeMapId, // Привязываем точку к текущей карте (farm, valley, etc.)
+            map: activeMapId, // Привязка к текущей активной карте
             category: category,
             x: Math.round(parseFloat(modal.dataset.x)),
             y: Math.round(parseFloat(modal.dataset.y)),
@@ -303,13 +310,13 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         markersData.push(newMarker);
-        renderDynamicMarkers();
+        renderDynamicMarkers(); // Перерисовываем карту с новой точкой
 
         modal.style.display = 'none';
         resetModalFields();
     });
 
-    // Скачивание JSON-файла
+    // Скачивание сформированного файла JSON
     exportBtn.addEventListener('click', () => {
         const dataStr = JSON.stringify(markersData, null, 2);
         const blob = new Blob([dataStr], { type: "application/json" });
@@ -322,7 +329,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==========================================
-    // 6. УМНЫЕ ТУЛТИПЫ ДЛЯ ПК И ТЕЛЕФОНОВ
+    // 6. УМНЫЕ ТУЛТИПЫ ДЛЯ ПК И СМАРТФОНОВ
     // ==========================================
     const tooltip = document.querySelector('.tooltip');
 
@@ -351,21 +358,20 @@ document.addEventListener('DOMContentLoaded', () => {
         tooltip.style.top = y + 'px';
     }
 
-    // Движение мыши (ПК)
+    // Слежение за курсором мыши
     document.addEventListener('mousemove', (e) => {
         updateTooltipPosition(e.pageX, e.pageY);
     });
 
-    // Движение пальца (Мобилки)
+    // Слежение за пальцем на сенсорных экранах
     document.addEventListener('touchmove', (e) => {
         if (e.touches && e.touches[0]) {
             updateTooltipPosition(e.touches[0].pageX, e.touches[0].pageY);
         }
     }, { passive: true });
 
-    // Использование делегирования событий для тултипов на ПК и смартфонах
+    // Показ тултипов при наведении мыши или тапе пальцем
     if (panzoomElem) {
-        // Мышка навелась на метку
         panzoomElem.addEventListener('mouseover', function (e) {
             const key = e.target.closest('.key');
             if (!key || isEditMode) return;
@@ -376,7 +382,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Мышка ушла с метки
         panzoomElem.addEventListener('mouseout', function (e) {
             const key = e.target.closest('.key');
             if (key && tooltip) {
@@ -384,7 +389,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Тап пальцем по метке (Смартфоны)
         panzoomElem.addEventListener('touchstart', function (e) {
             const key = e.target.closest('.key');
             if (!key || isEditMode) return;
@@ -398,22 +402,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         }, { passive: true });
-    }
 
-    // Скрывать тултип при зуме / движении карты
-    if (panzoomElem) {
+        // Скрываем тултипы при начале зума или перемещения карты
         panzoomElem.addEventListener('panzoomstart', () => {
             if (tooltip) tooltip.style.display = 'none';
         });
     }
 
-    // Скрывать тултип, если тапнули в пустое место
+    // Скрываем тултипы, если тапнули в пустое место экрана
     document.addEventListener('touchstart', (e) => {
         if (!e.target.closest('.key') && tooltip) {
             tooltip.style.display = 'none';
         }
     }, { passive: true });
 
-    // Запуск автоподгрузки JSON
+    // Запуск первичного сканирования JSON при загрузке страницы
     loadMarkers();
 });
