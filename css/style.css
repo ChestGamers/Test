@@ -429,18 +429,18 @@ circle.key:hover {
         padding: 8px 0;
     }
 
-    /* Лента кнопок со скроллом (ИСПРАВЛЕНО: теперь ничего не режется слева) */
+    /* Лента кнопок со скроллом */
     .maps-filter {
         display: flex;
         overflow-x: auto; /* Включаем прокрутку, если кнопки не влезают */
-        -webkit-overflow-scrolling: touch;
+        -webkit-overflow-scrolling: touch; /* Плавный скролл на iOS */
         gap: 8px;
-        padding: 4px 16px; /* Красивые отступы по бокам экрана */
-        justify-content: flex-start; /* Выравниваем от левого края, чтобы скролл работал идеально */
+        padding: 4px 16px; /* Отступы по бокам экрана */
+        justify-content: flex-start; /* Правильное выравнивание для скролла */
         align-items: center;
     }
 
-    /* Прячем уродливую полосу прокрутки внизу меню */
+    /* Прячем полосу прокрутки внизу меню */
     .maps-filter::-webkit-scrollbar {
         display: none;
     }
@@ -449,8 +449,8 @@ circle.key:hover {
     .filter-btn {
         flex: 0 0 auto; 
         font-size: 13px;
-        padding: 0 16px; /* Отступы только по бокам */
-        height: 38px; /* Четкая высота */
+        padding: 0 16px; 
+        height: 38px; 
         line-height: 36px;
         box-sizing: border-box;
     }
@@ -462,18 +462,45 @@ circle.key:hover {
         box-sizing: border-box;
     }
 
-    /* Сам выпадающий список (ИСПРАВЛЕНО ДЛЯ МОБИЛЬНЫХ) */
+    /* Сам выпадающий список (исправлено отображение текста Арсенала) */
     .filter-select {
         font-size: 13px;
-        height: 38px; /* Четкая высота */
-        min-width: 130px; /* ИСПРАВЛЕНИЕ: гарантируем ширину, чтобы текст помещался */
-        color: #e2e8f0 !important; /* ИСПРАВЛЕНИЕ: принудительно возвращаем светлый цвет текста */
-        background-color: #252529 !important; /* Плотный темный фон */
-        
-        /* ИСПРАВЛЕНИЕ: убираем line-height и центрируем текст с помощью внутреннего отступа */
+        height: 38px; 
+        min-width: 130px; 
+        color: #e2e8f0 !important; 
+        background-color: #252529 !important; 
         line-height: normal !important; 
         padding: 0 30px 0 12px !important; 
-        
         box-sizing: border-box;
         display: block;
     }
+
+    /* Оптимизация поп-апа под мобильные экраны */
+    .info {
+        padding: 20px 15px !important; /* Уменьшаем отступы ПК-версии */
+        width: 95% !important; 
+    }
+
+    .info__photo {
+        max-height: 200px !important; 
+        cursor: zoom-in; 
+    }
+
+    /* Режим «Во весь экран» для картинки при тапе */
+    .info__photo.zoomed {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        max-height: 100vh !important;
+        z-index: 2500 !important; /* Поверх всех окон */
+        background: #000000 !important; /* Черный фон */
+        object-fit: contain !important; /* Картинка без искажений */
+        padding: 0 !important;
+        margin: 0 !important;
+        border: none !important;
+        border-radius: 0 !important;
+        cursor: zoom-out;
+    }
+}
