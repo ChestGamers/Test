@@ -4,90 +4,207 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" svg="width=device-width, initial-scale=1.0" info__bg="width=device-width, initial-scale=1.0" 
-    info_title="width=device-width, initial-scale=1.0" info__text="width=device-width, initial-scale=1.0">
-    <title>ИНТЕРАКТИВНАЯ КАРТА КЛЮЧЕЙ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ИНТЕРАКТИВНАЯ КАРТА + РЕДАКТОР</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    
+    <!-- ПОДКЛЮЧЕНИЕ БИБЛИОТЕКИ PANZOOM -->
+    <script src="https://cdn.jsdelivr.net/npm/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
 </head>
 
 <body>
-    <div class="Map">
-        <div class="map-farm">
-            <svg viewBox="0 0 6640 3302">
-                <path
-                    data-description="Ключ от офиса на втором этаже пункта торговли зерном в фермерских угодьях. там может хранится что-то ценное"
-                    data-photo="media\Key\Farm\ключ от офиса в амбаре.png" data-title="Ключ от офиса в амбаре"
-                    class="key" d="m 1439.3177,2193.8039 0.3254,44.9177 48.1726,-0.9765 -1.302,-43.2902
-                z" />
-                <path
-                    data-description="Ключ, который носят при себе комбатанты. Открывает дверь у кладбища на ферме. Там можно найти ценности, собранные комбатантами"
-                    data-photo="media\Key\Farm\ключ от кладбища.png" data-title="Ключ с кладбища" class="key" d="m 1974.4235,2429.4588 1.302,41.0118
-                h 45.5686
-                l -1.9529,-40.3608
-                z" />
-                <path
-                    data-description="Ключ от главной гостевой комнаты на втором этаже мотеля в фермерских угодьях. Здесь было много постояльцев, после которых остались ценные вещи"
-                    data-photo="media\Key\Farm\ключ от главной комнаты.png"
-                    data-title="Ключ от главной гостевой комнаты в мотеле" class="key" d="m 2706.1255,2151.4902 0.651,51.4275 57.9372,-1.953 -1.9529,-48.8235
-                z" />
-                <path
-                    data-description="Ключ от номера 201 во внешнем коридоре на втором этаже мотеля в фермерских угодьях"
-                    data-photo="media\Key\Farm\201 комната.png" data-title="Ключ от комнаты 201 в мотеле" class="key" d="m 2905.9765,2110.4784 0.651,43.6157 42.3137,-0.651
-                v -41.6627
-                z" />
-                <path
-                    data-description="Ключ от главной спальни на втором этаже виллы в фермерских угодьях. Возможно, там хранится что-то очень ценное"
-                    data-photo="media\Key\Farm\ключ от главной спальни .png" data-title="Ключ от главной спальни мотеля"
-                    class="key" d="m 4294.9472,1868.6392
-                v 41.198
-                h 43.0392
-                v -42.8091
-                z" />
-                <path data-description="Ключ от двери в доме, расположенном в северо-восточном углу фермерских угодий"
-                    data-photo="media\Key\Farm\ключ от дома на краю карты(квестовый).png" data-title="Ключ от дома"
-                    class="key" d="m 4953.9608,1249.8824 3.2549,54.0313 58.5882,-0.651 -5.2078,-52.0784
-                z" />
-                <path
-                    data-description="Ключ от запертой комнаты в погрузочной зоне фермерских угодий, где хранится оружие"
-                    data-photo="media\Key\Farm\ключ от зоны погрузки.png" data-title="Ключ от зоны погрузки" class="key"
-                    d="m 4215.098,1232.3059 0.651,65.749 60.5412,-1.302 -3.2549,-62.4941
-                z" />
-                <path
-                    data-description="Старый ключ от комнаты управления переработкой отходов под мостом в фермерских угодьях"
-                    data-photo="media\Key\Farm\ключ от офиса станции переработки.png"
-                    data-title="Ключ от офиса переработки" class="key" d="m 2786.1961,1544.7765 0.651,55.9843 56.6353,1.3019
-                v -55.3333
-                z" />
-                <path data-description="Ключ от склада рядом с конюшней в фермерских угодьях"
-                    data-photo="media\Key\Farm\ключ от склада у конюшни(квестовый).png"
-                    data-title="Ключ от склада у конюшни" class="key" d="m 2370.2196,1282.4314
-                v 53.3804
-                h 70.9569
-                l -0.651,-53.3804
-                z" />
-            </svg>
-            <img src="media\Map\Карта фермы.jpg" alt="Карта Фермы">
+    <!-- ГЛОБАЛЬНЫЕ ШАБЛОНЫ ДЛЯ ВСЕХ ТИПОВ ТОЧЕК -->
+    <svg width="0" height="0" style="position: absolute;">
+        <defs>
+            <!-- Сейф (loot) -->
+            <pattern id="safe-pattern" width="1" height="1" patternContentUnits="objectBoundingBox">
+                <image href="media/safe.png" x="0" y="0" width="1" height="1" preserveAspectRatio="none" />
+            </pattern>
+            <!-- Обычный ящик (box) -->
+            <pattern id="box-pattern" width="1" height="1" patternContentUnits="objectBoundingBox">
+                <image href="media/box.png" x="0" y="0" width="1" height="1" preserveAspectRatio="none" />
+            </pattern>
+            <!-- Оружейный кейс (weapon) -->
+            <pattern id="weapon-pattern" width="1" height="1" patternContentUnits="objectBoundingBox">
+                <image href="media/weapon.png" x="0" y="0" width="1" height="1" preserveAspectRatio="none" />
+            </pattern>
+            <!-- Выход (extract) -->
+            <pattern id="extract-pattern" width="1" height="1" patternContentUnits="objectBoundingBox">
+                <image href="media/extract.png" x="0" y="0" width="1" height="1" preserveAspectRatio="none" />
+            </pattern>
+            <!-- Спавн (spawn) -->
+            <pattern id="spawn-pattern" width="1" height="1" patternContentUnits="objectBoundingBox">
+                <image href="media/spawn.png" x="0" y="0" width="1" height="1" preserveAspectRatio="none" />
+            </pattern>
+        </defs>
+    </svg>
+
+    <!-- ВЕРХНЯЯ ПАНЕЛЬ С КНОПКАМИ И ВЫПАДАЮЩИМ СПИСКОМ -->
+    <div class="header-filters">
+        <div class="maps-filter">
+            <button class="filter-btn active" data-map="farm">Ферма</button>
+            <button class="filter-btn" data-map="valley">Долина</button>
+            <button class="filter-btn" data-map="northridge">Нортридж</button>
+            <button class="filter-btn" data-map="port">Порт</button>
+            
+            <div class="dropdown-container">
+                <select id="armory-select" class="filter-select">
+                    <option value="" disabled selected>Арсенал ▾</option>
+                    <option value="armory">Арсенал (Основной)</option>
+                    <option value="armory-0f">Арсенал 0F (Подвал)</option>
+                    <option value="armory-1f">Арсенал 1F (1 этаж)</option>
+                    <option value="armory-2f">Арсенал 2F (2 этаж)</option>
+                </select>
+            </div>
+
+            <!-- Разделитель и быстрый фильтр по категориям -->
+            <span style="color: #444; margin: 0 10px;">|</span>
+            <select id="category-filter" class="filter-select">
+                <option value="all">Показать всё лут</option>
+                <option value="loot">Только Сейфы</option>
+                <option value="box">Обычные ящики</option>
+                <option value="weapon">Оружейные кейсы</option>
+                <option value="extract">Точки эвакуации</option>
+                <option value="spawn">Спавны ЧВК</option>
+            </select>
         </div>
     </div>
 
+    <!-- ОБЛАСТЬ ПРОСМОТРА КАРТЫ -->
+    <div class="map-viewport">
+        <div id="panzoom-element">
+
+            <!-- КАРТА: ФЕРМА -->
+            <div id="map-farm" class="map-layer active">
+                <svg viewBox="0 0 6640 3302">
+                    <!-- Сюда будут рендериться динамические точки редактора -->
+                    <g class="dynamic-markers-layer"></g>
+                    <!-- Твои старые жестко зашитые пути (остаются работать параллельно) -->
+                    <path data-description="Ключ от офиса на втором этаже пункта торговли зерном в фермерских угодьях." data-photo="media/Key/Farm/ключ от офиса в амбаре.png" data-title="Ключ от офиса в амбаре" class="key" d="m 1439.3177,2193.8039 0.3254,44.9177 48.1726,-0.9765 -1.302,-43.2902 z" />
+                    <path data-description="Ключ, который носят при себе комбатанты. Открывает дверь у кладбища на ферме." data-photo="media/Key/Farm/ключ от кладбища.png" data-title="Ключ с кладбища" class="key" d="m 1974.4235,2429.4588 1.302,41.0118 h 45.5686 l -1.9529,-40.3608 z" />
+                    <path data-description="Ключ от главной гостевой комнаты на втором этаже мотеля in фермерских угодьях." data-photo="media/Key/Farm/ключ от главной комнаты.png" data-title="Ключ от главной гостевой комнаты в мотеле" class="key" d="m 2706.1255,2151.4902 0.651,51.4275 57.9372,-1.953 -1.9529,-48.8235 z" />
+                </svg>
+                <img src="media/Map/Карта фермы.jpg" alt="Карта Фермы">
+            </div>
+
+            <!-- КАРТА: ДОЛИНА -->
+            <div id="map-valley" class="map-layer">
+                <svg viewBox="0 0 12960 6736">
+                    <g class="dynamic-markers-layer"></g>
+                    <path data-description="Ключ от комнаты охраны радиолокационной станции в долине..." data-photo="media/Key/Valley/Ключ от комнаты охраны радиолокационной станции.jpg" data-title="Ключ от комнаты охраны радиолокационной станции" class="key" d="m 2358.2118,5128.0941 2.5411,96.5647 121.9765,2.5412 -2.5412,-104.1882 z" />
+                </svg>
+                <img src="media/Map/Долина 2.0.png" alt="Карта Долины">
+            </div>
+
+            <!-- КАРТА: НОРТРИДЖ -->
+            <div id="map-northridge" class="map-layer">
+                <svg viewBox="0 0 9085 4571">
+                    <g class="dynamic-markers-layer"></g>
+                    <path data-description="Ключ от номера 202 на 2-м этаже в строении D гостиницы Нортриджа..." data-photo="media/Key/Northridge/Ключ D202.png" data-title="Ключ D202" class="key" d="m 4627.8461,3659.1979 v 25.8222 l 24.5626,0.6298 v -27.7116 z" />
+                </svg>
+                <img src="media/Map/НОРТРИДЖ 2.0.png" alt="Карта Нортриджа">
+            </div>
+
+            <!-- КАРТА: ПОРТ -->
+            <div id="map-port" class="map-layer">
+                <svg viewBox="0 0 7890 4566">
+                    <g class="dynamic-markers-layer"></g>
+                    <path data-description="Ключ от ворот в стене к западу от администрации." data-photo="media/Key/Port/Ключ от западаных ворот администрации.jpg" data-title="Ключ от западных ворот администрации" class="key" d="m 3355.1011,3484.1855 -9.8455,72.1997 60.1665,4.3758 8.7515,-74.3876 z" />
+                </svg>
+                <img src="media/Map/Порт.png" alt="Карта Порт">
+            </div>
+
+            <!-- КАРТА: АРСЕНАЛ (ОСНОВНОЙ) -->
+            <div id="map-armory" class="map-layer">
+                <svg viewBox="0 0 5323 3321">
+                    <g class="dynamic-markers-layer"></g>
+                    <path data-description="Ключ, отпирающий закрытое помещение в шлюзе №2." data-photo="media/Key/Armory/Ключ от шлюза №2.jpg" data-title="Ключ от шлюза №2" class="key" d="m 2517.205,1507.6615 1.8265,34.182 34.7038,0.7828 -2.3483,-34.7039 z" />
+                </svg>
+                <img src="media/Map/АРСЕНАЛ.jpg" alt="Карта Арсенал">
+            </div>
+
+            <!-- КАРТА: АРСЕНАЛ 0F -->
+            <div id="map-armory-0f" class="map-layer">
+                <svg viewBox="0 0 1609 988">
+                    <g class="dynamic-markers-layer"></g>
+                    <path data-description="Ключ-карта от входа в подземный зал командования." data-photo="media/Key/Armory/ключ карта от входа в зал командования.png" data-title="Ключ карта от входа в зал командования" class="key" d="m 978.01961,457.46078 0.63098,16.72099 h 17.35196 l 0.31549,-17.03648 z" />
+                </svg>
+                <img src="media/Map/АРСЕНАЛ 0F.png" alt="Карта Арсенала 0F">
+            </div>
+
+            <!-- КАРТА: АРСЕНАЛ 1F -->
+            <div id="map-armory-1f" class="map-layer">
+                <svg viewBox="0 0 1609 988">
+                    <g class="dynamic-markers-layer"></g>
+                    <path data-description="Ключ от склада снаряжения G3 на первом этаже." data-photo="media/Key/Armory/ключ от склада снаряжения.png" data-title="Ключ от склада снаряжения" class="key" d="m 766.79892,660.16324 0.15775,11.83088 10.88441,-0.15775 -0.63098,-11.51539 z" />
+                </svg>
+                <img src="media/Map/Арсенал 1F.png" alt="Карта Арсенала 1F">
+            </div>
+
+            <!-- КАРТА: АРСЕНАЛ 2F -->
+            <div id="map-armory-2f" class="map-layer">
+                <svg viewBox="0 0 1525 988">
+                    <g class="dynamic-markers-layer"></g>
+                    <path data-description="Ключ-карта от оружейного склада на 2-м этаже." data-photo="media/Key/Armory/ключ карта от оружейного склада.png" data-title="Ключ-карта от оружейного склада" class="key" d="m 1131.0918,605.13783 -0.1057,12.26344 12.6863,0.21144 -0.1057,-13.1092 z" />
+                </svg>
+                <img src="media/Map/АРСЕНАЛ 2F.png" alt="Карта Арсенала 2F">
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ОКНА И ПОДСКАЗКИ -->
     <div class="info__bg">
         <div class="info">
-        <img src="" alt="" class="info__photo">
-        <h2 class="info_title">
-
-        </h2>
-        <p class="info__text">
-
-        </p>
+            <span class="info__close">&times;</span>
+            <img src="" alt="" class="info__photo">
+            <h2 class="info_title"></h2>
+            <p class="info__text"></p>
         </div>
     </div>
-        <div class="tooltip">
+    <div class="tooltip"></div>
 
+    <!-- МОДАЛЬНОЕ ОКНО СОЗДАНИЯ МАРКЕРА -->
+    <div id="marker-modal">
+        <h3>Новая точка лута</h3>
+        <div class="form-group">
+            <label for="m-title">Название</label>
+            <input type="text" id="m-title" placeholder="Например: Оружейный ящик">
         </div>
+        <div class="form-group">
+            <label for="m-desc">Описание</label>
+            <textarea id="m-desc" rows="3" placeholder="Что внутри, какой ключ нужен..."></textarea>
+        </div>
+        <div class="form-group">
+            <label for="m-image">Путь к фото (например: media/Key/Farm/image.png)</label>
+            <input type="text" id="m-image" placeholder="Оставь пустым, если фото нет">
+        </div>
+        <div class="form-group">
+            <label for="m-cat">Категория лута</label>
+            <select id="m-cat">
+                <option value="loot">Сейф</option>
+                <option value="box">Обычный деревянный ящик</option>
+                <option value="weapon">Оружейный кейс</option>
+                <option value="extract">Выход из локации</option>
+                <option value="spawn">Спавн игроков (ЧВК)</option>
+            </select>
+        </div>
+        <div class="modal-buttons">
+            <button class="modal-btn btn-cancel" id="cancel-marker">Отмена</button>
+            <button class="modal-btn btn-save" id="save-marker">Добавить</button>
+        </div>
+    </div>
 
+    <!-- ПАНЕЛЬ УПРАВЛЕНИЯ РЕДАКТОРОМ (В правый нижний угол) -->
+    <div id="editor-panel">
+        <button class="control-btn" id="toggle-edit">РЕЖИМ РЕДАКТОРА: ВЫКЛ</button>
+        <button class="control-btn" id="export-data" style="display: none;">СКАЧАТЬ JSON</button>
+    </div>
+
+    <!-- ПОДКЛЮЧЕНИЕ СВЯЗУЮЩЕГО СКРИПТА -->
     <script src="js/main.js"></script>
 </body>
 

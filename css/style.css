@@ -1,112 +1,416 @@
+/* 1. ОБЩИЕ СТИЛИ И СБРОС СТАНДАРТНЫХ ОТСТУПОВ */
 * {
-	box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-	margin: 0;
-	padding: 0;
-	font-family: 'Montserrat', sans-serif;
+    font-family: 'Montserrat', sans-serif;
+    background-color: #121214;
+    color: #e2e8f0;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
 }
 
-img {
-	max-width: 100%;
-	height: auto;
+/* 2. ВЕРХНЯЯ ПАНЕЛЬ С КНОПКАМИ И СЕЛЕКТОМ */
+.header-filters {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    background: rgba(20, 20, 20, 0.9);
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    border: 1px solid #2d2d34;
 }
 
-.Map {
-	width: 100%;
-	height: 100vh;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+.maps-filter {
+    display: flex;
+    gap: 10px;
+    align-items: center;
 }
 
-.map-farm {
-	max-width: 3302px;
-	position: relative;
-	text-align: center;
+/* Стили кнопок */
+.filter-btn {
+    background: #252529;
+    color: #e2e8f0;
+    border: 1px solid #3f3f46;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.map-farm svg {
-	position: absolute;
-	top: -2px;
-	left: 0;
-	height: 100%;
-	width: 100%;
+.filter-btn:hover {
+    background: #2e2e33;
+    border-color: #e58e26;
 }
 
-.map svg path {
-	fill: none;
-	pointer-events: all;
-	cursor: pointer;
+.filter-btn.active {
+    background: rgba(229, 142, 38, 0.15);
+    color: #ffffff;
+    border-color: #e58e26;
+    font-weight: 600;
 }
 
-.map svg path:hover {
-	animation: hoverElement 2s linear infinite;
+/* Стили селектов */
+.filter-select {
+    background: #252529;
+    color: #e2e8f0;
+    border: 1px solid #3f3f46;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 5px;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding-right: 30px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 14px;
 }
 
+.filter-select:hover {
+    background-color: #2e2e33;
+    border-color: #e58e26;
+}
+
+/* 3. ОБЛАСТЬ ПРОСМОТРА КАРТЫ */
+.map-viewport {
+    width: 100vw;
+    height: 100vh;
+    cursor: grab;
+}
+
+.map-viewport:active {
+    cursor: grabbing;
+}
+
+#panzoom-element {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.map-layer {
+    display: none;
+    position: relative;
+    max-width: 95vw;
+    max-height: 95vh;
+}
+
+.map-layer.active {
+    display: inline-block;
+}
+
+.map-layer img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 95vh;
+    object-fit: contain;
+    pointer-events: none;
+    user-select: none;
+}
+
+/* 4. СТИЛИ ДЛЯ SVG И МЕТОК ЛУТА */
+.map-layer svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+}
+
+/* Базовый стиль всех интерактивных точек (по умолчанию Сейф) */
 .key {
-	fill: none;
-	stroke: rgb(0, 17, 255);
-	stroke-width: 10px;
-	cursor: pointer;
-	pointer-events: all;
+    fill: url(#safe-pattern) !important;
+    stroke: #e58e26; /* Фирменная оранжевая обводка */
+    stroke-width: 3px;
+    cursor: pointer;
+    transition: stroke 0.2s ease, filter 0.2s ease, r 0.2s ease;
+    pointer-events: all !important;
 }
 
+/* Изменяем размер кругов при наведении */
+circle.key:hover {
+    r: 32px; /* Чуть увеличиваем круг-иконку при наведении */
+}
+
+/* Категория: Обычный ящик */
+.key.box {
+    fill: url(#box-pattern) !important;
+    stroke: #4ade80; /* Зеленая обводка */
+}
+
+/* Категория: Оружейный кейс */
+.key.weapon {
+    fill: url(#weapon-pattern) !important;
+    stroke: #facc15; /* Желтая обводка */
+}
+
+/* Категория: Точка эвакуации (выхода) */
+.key.extract {
+    fill: url(#extract-pattern) !important;
+    stroke: #60a5fa; /* Синяя обводка */
+}
+
+/* Категория: Спавн игроков */
+.key.spawn {
+    fill: url(#spawn-pattern) !important;
+    stroke: #f87171; /* Красная обводка */
+}
+
+/* Эффекты подсветки и свечения при наведении */
 .key:hover {
-	animation: highlightKey 2s linear infinite;
+    stroke: #ffaa00;
+    filter: drop-shadow(0 0 8px rgba(229, 142, 38, 0.8));
+}
+.key.box:hover {
+    stroke: #22c55e;
+    filter: drop-shadow(0 0 8px rgba(74, 222, 128, 0.8));
+}
+.key.weapon:hover {
+    stroke: #eab308;
+    filter: drop-shadow(0 0 8px rgba(250, 204, 21, 0.8));
+}
+.key.extract:hover {
+    stroke: #3b82f6;
+    filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.8));
+}
+.key.spawn:hover {
+    stroke: #ef4444;
+    filter: drop-shadow(0 0 8px rgba(248, 113, 113, 0.8));
 }
 
-@keyframes highlightKey {
-	0% {
-		stroke: rgb(0, 255, 0);
-	}
-	50% {
-		stroke: red;
-	}
-	100% {
-		stroke: black;
-	}
-}
-
+/* 5. ОКНА, ПОДСКАЗКИ И МОДАЛКИ */
 .tooltip {
-	position: absolute;
-	left: 0;
-	top: 0;
-	padding: 5px;
-	background: #c5effa;
-	border-radius: 10px;
-	box-shadow: 0 0 10px rgba(0,0,0,0.3);
-	display: none;
+    position: absolute;
+    display: none;
+    background: rgba(10, 10, 12, 0.95);
+    color: #e2e8f0;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid #e58e26;
+    pointer-events: none;
+    z-index: 1000;
+    white-space: nowrap;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
 }
 
 .info__bg {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100vh;
-	background: rgba(0,0,0,0.5);
-	opacity: 0;
-	transition: 0.3s all;
-	pointer-events: none;
-	z-index: 10;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 500;
 }
 
 .info__bg.active {
-	pointer-events: all;
-	opacity: 1;
-	transition: 0.3s all;
+    opacity: 1;
+    pointer-events: all;
 }
 
 .info {
+    background: #1a1a1e;
+    border: 2px solid #e58e26;
+    padding: 35px;
+    border-radius: 10px;
+    max-width: 600px;
+    width: 90%;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    text-align: center;
+}
+
+.info__close {
     position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 32px;
+    color: #94a3b8;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s ease;
+}
+
+.info__close:hover {
+    color: #ef4444;
+}
+
+.info__photo {
+    width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    background: #121214;
+    padding: 5px;
+    border: 1px solid #2d2d34;
+}
+
+.info_title {
+    font-size: 22px;
+    color: #e58e26;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.info__text {
+    font-size: 15px;
+    color: #94a3b8;
+    line-height: 1.6;
+}
+
+/* 6. СТИЛИ ИНТЕРФЕЙСА РЕДАКТОРА */
+#editor-panel {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    gap: 10px;
+}
+
+.control-btn {
+    background: #252529;
+    color: #e2e8f0;
+    border: 1px solid #3f3f46;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+#toggle-edit.active {
+    background: #e58e26;
+    color: #000;
+    border-color: #e58e26;
+    box-shadow: 0 0 15px rgba(229, 142, 38, 0.4);
+}
+
+#export-data {
+    background: #166534;
+    color: #bbf7d0;
+    border-color: #15803d;
+}
+
+#export-data:hover {
+    background: #15803d;
+}
+
+/* Модалка создания маркера */
+#marker-modal {
+    display: none;
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: #fff;
-    border-radius: 20px;
+    background: #1a1a1e;
     padding: 25px;
-    width: 90%; /* Изменили на относительную ширину */
-    max-width: 500px; /* Ограничение для больших экранов */
+    border: 2px solid #e58e26;
+    border-radius: 10px;
+    z-index: 2000;
+    width: 350px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+}
+
+#marker-modal h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #e58e26;
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+}
+
+.form-group label {
+    font-size: 11px;
+    color: #94a3b8;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.form-group input, .form-group textarea, .form-group select {
+    background: #252529;
+    border: 1px solid #3f3f46;
+    color: #e2e8f0;
+    padding: 10px;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 13px;
+}
+
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+    outline: none;
+    border-color: #e58e26;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.modal-btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    transition: background 0.2s ease;
+}
+
+.btn-save {
+    background: #e58e26;
+    color: #000000;
+}
+
+.btn-save:hover {
+    background: #f39c12;
+}
+
+.btn-cancel {
+    background: #3f3f46;
+    color: #e2e8f0;
+}
+
+.btn-cancel:hover {
+    background: #52525b;
 }
