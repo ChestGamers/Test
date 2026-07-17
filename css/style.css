@@ -422,49 +422,53 @@ circle.key:hover {
         top: 0;
         left: 0;
         width: 100%;
-        transform: none; /* ИСПРАВЛЕНИЕ: полностью отменяем компьютерный сдвиг влево */
+        transform: none; /* Отменяем компьютерный сдвиг */
         z-index: 1000;
         background: rgba(15, 15, 15, 0.95);
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
-        padding: 6px 0;
+        padding: 8px 0;
     }
 
-    /* Выстраиваем кнопки по центру */
+    /* Лента кнопок со скроллом (ИСПРАВЛЕНО: теперь ничего не режется слева) */
     .maps-filter {
         display: flex;
-        overflow-x: auto; /* Включаем скролл, если экран будет совсем узкий */
+        overflow-x: auto; /* Включаем прокрутку, если кнопки не влезают */
         -webkit-overflow-scrolling: touch;
         gap: 8px;
-        padding: 4px 12px;
-        justify-content: center; /* ИСПРАВЛЕНИЕ: выравниваем все кнопки ровно по центру экрана */
+        padding: 4px 16px; /* Красивые отступы по бокам экрана */
+        justify-content: flex-start; /* Выравниваем от левого края, чтобы скролл работал идеально */
+        align-items: center;
     }
 
-    /* Если экран телефона слишком узкий и кнопки начинают не влезать, 
-       переключаем выравнивание налево, чтобы скролл работал корректно */
-    @media (max-width: 520px) {
-        .maps-filter {
-            justify-content: flex-start;
-        }
-    }
-
-    /* Прячем полосу прокрутки */
+    /* Прячем уродливую полосу прокрутки внизу меню */
     .maps-filter::-webkit-scrollbar {
         display: none;
     }
 
-    /* Запрещаем кнопкам сжиматься */
-    .filter-btn, 
-    .dropdown-container {
+    /* Стили для кнопок карт */
+    .filter-btn {
         flex: 0 0 auto; 
         font-size: 13px;
-        padding: 8px 14px;
+        padding: 0 16px; /* Отступы только по бокам */
+        height: 38px; /* Четкая высота */
+        line-height: 36px;
+        box-sizing: border-box;
+    }
+
+    /* Контейнер списка (ИСПРАВЛЕНО: убрали паддинг, который сплющивал текст) */
+    .dropdown-container {
+        flex: 0 0 auto;
         height: 38px;
         box-sizing: border-box;
     }
 
+    /* Сам выпадающий список (ИСПРАВЛЕНО: убрали лишние отступы, вернули текст на место) */
     .filter-select {
         font-size: 13px;
-        height: 100%;
-        cursor: pointer;
+        height: 38px; /* Точно такая же высота, как у кнопок */
+        padding: 0 35px 0 12px; /* Очищаем верх/низ, оставляем место под стрелочку справа */
+        line-height: 36px;
+        box-sizing: border-box;
+        display: block;
     }
 }
