@@ -455,20 +455,25 @@ circle.key:hover {
         box-sizing: border-box;
     }
 
-    /* Контейнер списка (ИСПРАВЛЕНО: убрали паддинг, который сплющивал текст) */
+    /* Контейнер списка */
     .dropdown-container {
         flex: 0 0 auto;
         height: 38px;
         box-sizing: border-box;
     }
 
-    /* Сам выпадающий список (ИСПРАВЛЕНО: убрали лишние отступы, вернули текст на место) */
+    /* Сам выпадающий список (ИСПРАВЛЕНО ДЛЯ МОБИЛЬНЫХ) */
     .filter-select {
         font-size: 13px;
-        height: 38px; /* Точно такая же высота, как у кнопок */
-        padding: 0 35px 0 12px; /* Очищаем верх/низ, оставляем место под стрелочку справа */
-        line-height: 36px;
+        height: 38px; /* Четкая высота */
+        min-width: 130px; /* ИСПРАВЛЕНИЕ: гарантируем ширину, чтобы текст помещался */
+        color: #e2e8f0 !important; /* ИСПРАВЛЕНИЕ: принудительно возвращаем светлый цвет текста */
+        background-color: #252529 !important; /* Плотный темный фон */
+        
+        /* ИСПРАВЛЕНИЕ: убираем line-height и центрируем текст с помощью внутреннего отступа */
+        line-height: normal !important; 
+        padding: 0 30px 0 12px !important; 
+        
         box-sizing: border-box;
         display: block;
     }
-}
